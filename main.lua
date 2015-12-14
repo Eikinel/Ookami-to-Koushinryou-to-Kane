@@ -452,12 +452,12 @@ function setColorOrNot(x1, y1, x2, y2)
 end
 
 function setStatesFalse(nbr)
-   local i = 1
+   local j = 1
 
-   while (i <= 10) do
-      if (states[i] == true) then last_state = i end
-      states[i] = false
-      i = i + 1
+   while (j <= 10) do
+      if (states[j] == true) then last_state = j end
+      states[j] = false
+      j = j + 1
    end
    states[nbr] = true
 end
