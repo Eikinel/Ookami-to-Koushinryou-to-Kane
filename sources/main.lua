@@ -142,12 +142,13 @@ function love.mousepressed(x, y, button)
 
       -- Si on est en pause --
       if is_paused then
-	 if ((x >= 500 and y >= 350) and (x <= 775 and y <= 380)) then
+	 if ((x >= 530 and y >= 300) and (x <= 740 and y <= 330)) then is_paused = false
+	 elseif ((x >= 500 and y >= 400) and (x <= 775 and y <= 430)) then
 	    love.load()
 	    setStatesFalse(1)
 	    is_paused = false
-	 elseif ((x >= 560 and y >= 450) and (x <= 705 and y <= 480)) then love.event.quit() end
-	 
+	 elseif ((x >= 560 and y >= 500) and (x <= 705 and y <= 530)) then love.event.quit() end
+	 	 
 	 -- Si on est à l'écran de départ --
       elseif (states[1] == true) then
 	 if ((x >= 610 and y >= 60) and (x <= 700 and y <= 80)) then setStatesFalse(2)
@@ -188,11 +189,11 @@ function love.mousepressed(x, y, button)
 end
 
 function love.keypressed(key, isrepeat)
-   if (love.keyboard.isDown("escape") and states[10] == false and not is_paused) then
+   if ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and states[10] == false and not is_paused) then
       is_paused = true
       love.graphics.setColor(150, 150, 150)
 
-   elseif (love.keyboard.isDown("escape") and states[10] == false and is_paused) then
+   elseif ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and states[10] == false and is_paused) then
       is_paused = false
       love.graphics.setColor(255, 255, 255)
    end
@@ -467,11 +468,15 @@ function love.draw()
       love.graphics.line(425, 210, 850, 210)
       
       love.graphics.setFont(animeFont30)
-      setColorOrNotPaused(500, 350, 775, 380)
-      love.graphics.print("Recommencer", 500, 350)
+      setColorOrNotPaused(530, 300, 740, 330)
+      love.graphics.print("Reprendre", 530, 300)
 
-      setColorOrNotPaused(560, 450, 705, 480)
-      love.graphics.print("Quitter", 560, 450)
+      setColorOrNotPaused(500, 400, 775, 430)
+      love.graphics.print("Recommencer", 500, 400)
+
+      setColorOrNotPaused(560, 500, 705, 530)
+      love.graphics.print("Quitter", 560, 500)
+      
       love.graphics.setColor(150, 150, 150)
    end
 end
