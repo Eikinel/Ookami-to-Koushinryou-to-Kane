@@ -1,7 +1,7 @@
 # Ookami to Koushinryou to Kane
 
 ## Getting started
-* On Linux : install the library Löve2D (on Arch Linux : yaourt -S love), go to the folder "Ookami-to-Koushinryou-to-Kane-LINUX" and launch the game with the command "love . Ookami-to-Koushinryou-to-Kane.love"
+* On Linux : install the library Löve2D (on Arch Linux : yaourt -S love), go to the folder "Ookami-to-Koushinryou-to-Kane-LINUX" and launch the game with the command "love Ookami-to-Koushinryou-to-Kane.love"
 
 * On Windows : go to the folder "Ookami-to-Koushinryou-to-Kane-WINDOWS" and double-click on "Ookami-to-Koushinryou-to-Kane.exe" to execute the game.
 
