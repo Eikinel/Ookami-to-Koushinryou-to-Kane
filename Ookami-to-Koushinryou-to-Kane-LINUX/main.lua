@@ -30,7 +30,9 @@ function love.load()
    win = love.audio.newSource("res/sound/win.mp3", "static")
 
    money:setVolume(0.6)
+   
    -- OTHERS --
+
    states = {false, false, false, false, false, false, false, false, false, true, false}
    last_state = 1
    is_paused = false
@@ -55,7 +57,7 @@ function love.load()
    
    -- INVENTORY --
 
-   argent = 200
+   argent = 100
    item1.inventory = 0
    item2.inventory = 0
    item3.inventory = 0
@@ -66,8 +68,8 @@ function love.load()
    item3.total = 0
    item4.total = 0
    item5.total = 0
-   item1.taxe = 15 / 100
-   item2.taxe = 10 / 100
+   item1.taxe = 8 / 100
+   item2.taxe = 15 / 100
    item3.taxe = 25 / 100
    item4.taxe = 18 / 100
    item5.taxe = 35 / 100
@@ -79,9 +81,9 @@ function love.update(dt)
       if (checkState() < 8) then
 	 i = 2
 	 dtotal = dtotal + dt
+	 checkLoseOrWin()
       end
-      
-      checkLoseOrWin()
+
       if (dtotal >= 0.1) then
 	 dtotal = dtotal - 0.1
 	 while (item1[i]) do
@@ -114,23 +116,23 @@ function love.update(dt)
 	    end
 	 end
 	 
-	 item1[i] = math.abs(math.random(item1[i - 1] - 2, item1[i - 1] + 2))
+	 item1[i] = math.abs(math.random(item1[i - 1] - 1, item1[i - 1] + 1))
 	 adjustPrice(item1[i], item1)
 	 item1.x[i] = item1.x[i - 1] + 1
 	 
-	 item2[i] = math.abs(math.random(item2[i - 1] - 5, item2[i - 1] + 5))
+	 item2[i] = math.abs(math.random(item2[i - 1] - 2, item2[i - 1] + 2))
 	 adjustPrice(item2[i], item2)
 	 item2.x[i] = item2.x[i - 1] + 1
 	 
-	 item3[i] = math.abs(math.random(item3[i - 1] - 8, item3[i - 1] + 8))
+	 item3[i] = math.abs(math.random(item3[i - 1] - 3, item3[i - 1] + 3))
 	 adjustPrice(item3[i], item3)
 	 item3.x[i] = item3.x[i - 1] + 1
 	 
-	 item4[i] = math.abs(math.random(item4[i - 1] - 10, item4[i - 1] + 10))
+	 item4[i] = math.abs(math.random(item4[i - 1] - 4, item4[i - 1] + 4))
 	 adjustPrice(item4[i], item4)
 	 item4.x[i] = item4.x[i - 1] + 1
 	 
-	 item5[i] = math.abs(math.random(item5[i - 1] - 15, item5[i - 1] + 15))
+	 item5[i] = math.abs(math.random(item5[i - 1] - 5, item5[i - 1] + 5))
 	 adjustPrice(item5[i], item5)
 	 item5.x[i] = item5.x[i - 1] + 1
       end
