@@ -18,7 +18,7 @@ function love.load()
    speed_x1 = love.graphics.newImage("res/img/speed_x1.png");
    speed_x2 = love.graphics.newImage("res/img/speed_x2.png");
    speed_x3 = love.graphics.newImage("res/img/speed_x3.png");
-   menu = love.graphics.newImage("res/img/menu.png");
+   pause_menu = love.graphics.newImage("res/img/pause_menu.png");
    bourse = love.graphics.newImage("res/img/bourse.png");
    
    --SOUNDS --
@@ -28,7 +28,8 @@ function love.load()
    money = love.audio.newSource("res/sound/money.mp3", "static")
    lose = love.audio.newSource("res/sound/lose.mp3", "static")
    win = love.audio.newSource("res/sound/win.mp3", "static")
-   
+
+   money:setVolume(0.6)
    -- OTHERS --
    states = {false, false, false, false, false, false, false, false, false, true, false}
    last_state = 1
@@ -50,7 +51,8 @@ function love.load()
    item3.y = {600, 600}
    item4.y = {600, 600}
    item5.y = {600, 600}
-
+   love.keyboard.setKeyRepeat = false
+   
    -- INVENTORY --
 
    argent = 200
@@ -73,12 +75,12 @@ end
 
 function love.update(dt)
 
-   if (love.keyboard.isDown("escape")) then love.event.quit() end
-   
-   if (checkState() < 8) then
-      i = 2
-      dtotal = dtotal + dt
-
+   if not is_paused then
+      if (checkState() < 8) then
+	 i = 2
+	 dtotal = dtotal + dt
+      end
+      
       checkLoseOrWin()
       if (dtotal >= 0.1) then
 	 dtotal = dtotal - 0.1
@@ -138,8 +140,16 @@ end
 function love.mousepressed(x, y, button)
    if (button == "l") then
 
-      -- Si on est à l'écran de départ --
-      if (states[1] == true) then
+      -- Si on est en pause --
+      if is_paused then
+	 if ((x >= 500 and y >= 350) and (x <= 775 and y <= 380)) then
+	    love.load()
+	    setStatesFalse(1)
+	    is_paused = false
+	 elseif ((x >= 560 and y >= 450) and (x <= 705 and y <= 480)) then love.event.quit() end
+	 
+	 -- Si on est à l'écran de départ --
+      elseif (states[1] == true) then
 	 if ((x >= 610 and y >= 60) and (x <= 700 and y <= 80)) then setStatesFalse(2)
 	 elseif ((x >= 605 and y >= 90) and (x <= 690 and y <= 110)) then setStatesFalse(3)
 	 elseif ((x >= 595 and y >= 120) and (x <= 710 and y <= 140)) then setStatesFalse(4)
@@ -150,7 +160,7 @@ function love.mousepressed(x, y, button)
 	 -- Si on est dans l'inventaire --
       elseif (states[7] == true) then
 	 if ((x >= 20 and y >= 620) and (x <= 230 and y <= 716)) then setStatesFalse(last_state) end
-
+	 
 	 -- Si on a perdu ou gagné --
       elseif (states[8] == true or states[9] == true) then
 	 if ((x >= 500 and y >= 400) and (x <= 775 and y <= 430)) then
@@ -162,8 +172,6 @@ function love.mousepressed(x, y, button)
       elseif (states[10] == true) then
 	 if ((x >= 400 and y >= 350) and (x <= 840 and y <= 380)) then setStatesFalse(1)
 	 elseif ((x >= 550 and y >= 450) and (x <= 695 and y <= 480)) then love.event.quit() end
-
-      elseif (states[10] == true) then
 	 
 	 -- Si on est dans les cours de la bourse --
       else
@@ -179,12 +187,19 @@ function love.mousepressed(x, y, button)
    end
 end
 
-function love.draw()
+function love.keypressed(key, isrepeat)
+   if (love.keyboard.isDown("escape") and states[10] == false and not is_paused) then
+      is_paused = true
+      love.graphics.setColor(150, 150, 150)
 
-   if is_paused then
-      love.graphics.setColor(0, 0, 0)
+   elseif (love.keyboard.isDown("escape") and states[10] == false and is_paused) then
+      is_paused = false
+      love.graphics.setColor(255, 255, 255)
    end
-   
+end
+
+function love.draw()
+  
    if (states[10] == false) then
       love.audio.stop(opening)
       love.audio.play(foule)
@@ -198,7 +213,7 @@ function love.draw()
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
       love.graphics.setFont(animeFont20)
-      
+
       setColorOrNot(610, 60, 700, 80)
       love.graphics.print("Clou", 620, 60)
       
@@ -213,8 +228,10 @@ function love.draw()
       
       setColorOrNot(605, 180, 690, 200)
       love.graphics.print("Pyrite", 605, 180)
-      
-      love.graphics.setColor(255, 255, 255)
+
+      if not is_paused then
+	 love.graphics.setColor(255, 255, 255)
+      end
    end
    
    if (states[2] == true) then
@@ -223,7 +240,7 @@ function love.draw()
       love.graphics.draw(bourse, 1050, 20)
       love.graphics.draw(arrow, 20, 620)
       love.graphics.draw(woodsign, 350, 620)
-      love.graphics.draw(woodsign, 700, 620)
+      love.graphics.draw(woodsign, 700, 620)      
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
       love.graphics.print("Cours de la bourse du clou", 370, 60)
@@ -231,7 +248,7 @@ function love.draw()
       love.graphics.print("Taxe à la vente :", 550, 110)
       love.graphics.print(round(item1.taxe * 100, 2), 690, 110)
       love.graphics.print("%", 730, 110)
-      buySellSigns(item1)
+      buySellSigns(item1)      
       axesGraph()
       writeGraph(1)
    end
@@ -441,6 +458,22 @@ function love.draw()
       love.graphics.print("Quitter", 550, 450)
       love.graphics.setColor(255, 255, 255)
    end
+
+   if is_paused then
+      love.graphics.draw(pause_menu, 350, 50)
+      love.graphics.setFont(animeFont50)
+      love.graphics.setColor(255, 255, 255)
+      love.graphics.print("Pause", 540, 120)
+      love.graphics.line(425, 210, 850, 210)
+      
+      love.graphics.setFont(animeFont30)
+      setColorOrNotPaused(500, 350, 775, 380)
+      love.graphics.print("Recommencer", 500, 350)
+
+      setColorOrNotPaused(560, 450, 705, 480)
+      love.graphics.print("Quitter", 560, 450)
+      love.graphics.setColor(150, 150, 150)
+   end
 end
 
 function round(num, dec)
@@ -451,11 +484,19 @@ end
 function setColorOrNot(x1, y1, x2, y2)
    local x_mouse, y_mouse = love.mouse.getPosition()
 
+   if is_paused then love.graphics.setColor(150, 150, 150)
+   elseif ((x_mouse >= x1 and y_mouse >= y1) and (x_mouse <= x2 and y_mouse <= y2)) then
+      love.graphics.setColor(60, 209, 230)
+   else love.graphics.setColor(255, 255, 255)
+   end
+end
+
+function setColorOrNotPaused(x1, y1, x2, y2)
+   local x_mouse, y_mouse = love.mouse.getPosition()
+
    if ((x_mouse >= x1 and y_mouse >= y1) and (x_mouse <= x2 and y_mouse <= y2)) then
       love.graphics.setColor(60, 209, 230)
-   else
-      love.graphics.setColor(255, 255, 255)
-   end
+   else love.graphics.setColor(255, 255, 255) end
 end
 
 function setStatesFalse(nbr)
@@ -547,32 +588,39 @@ end
 function buySellSigns(nb_item)
    
    love.graphics.setFont(animeFont12)
-   if (argent - nb_item[lastItem()] >= 0) then setColorOrNot(360, 630, 450, 645)
+
+   if is_paused then love.graphics.setColor(75, 75, 75)
+   elseif (argent - nb_item[lastItem()] >= 0) then setColorOrNot(360, 630, 450, 645)
    else love.graphics.setColor(150, 150, 150) end
    love.graphics.print("Achat x1", 360, 630)
-   
-   if (argent - (nb_item[lastItem()] * 5) >= 0) then setColorOrNot(360, 660, 450, 675)
+
+   if is_paused then love.graphics.setColor(75, 75, 75)
+   elseif (argent - (nb_item[lastItem()] * 5) >= 0) then setColorOrNot(360, 660, 450, 675)
    else love.graphics.setColor(150, 150, 150) end
    love.graphics.print("Achat x5", 360, 660)
-   
-   if (argent - (nb_item[lastItem()] * 10) >= 0) then setColorOrNot(360, 690, 450, 705)
+
+   if is_paused then love.graphics.setColor(75, 75, 75)
+   elseif (argent - (nb_item[lastItem()] * 10) >= 0) then setColorOrNot(360, 690, 450, 705)
    else love.graphics.setColor(150, 150, 150) end
    love.graphics.print("Achat x10", 360, 690)
 
-
-   if (nb_item.inventory > 0) then setColorOrNot(880, 630, 970, 645)
+   if is_paused then love.graphics.setColor(75, 75, 75)
+   elseif (nb_item.inventory > 0) then setColorOrNot(880, 630, 970, 645)
    else love.graphics.setColor(150, 150, 150) end
    love.graphics.print("Vente x1", 880, 630)
-   
-   if (nb_item.inventory > 4) then setColorOrNot(880, 660, 970, 675)
+
+   if is_paused then love.graphics.setColor(75, 75, 75)
+   elseif (nb_item.inventory > 4) then setColorOrNot(880, 660, 970, 675)
    else love.graphics.setColor(150, 150, 150) end
    love.graphics.print("Vente x5", 880, 660)
-   
-   if (nb_item.inventory > 9) then setColorOrNot(880, 690, 970, 705)
+
+   if is_paused then love.graphics.setColor(75, 75, 75)
+   elseif (nb_item.inventory > 9) then setColorOrNot(880, 690, 970, 705)
    else love.graphics.setColor(150, 150, 150) end
    love.graphics.print("Vente x10", 880, 690)
-   
-   love.graphics.setColor(255, 255, 255)
+
+   if not is_paused then love.graphics.setColor(255, 255, 255)
+   else love.graphics.setColor(150, 150, 150) end
 end
 
 function lastItem()
@@ -611,8 +659,8 @@ function buyItem(nb_item, many)
       argent = argent - (nb_item[lastItem()] * many)
       nb_item.inventory = nb_item.inventory + many
       nb_item.total = nb_item.total + (nb_item[lastItem()] * many)
-      love.audio.play(arigato[math.random(4)])
       love.audio.play(money)
+      love.audio.play(arigato[math.random(4)])
    end	    
 end
 

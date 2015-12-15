@@ -1,2 +1,0 @@
-To execute a .love file, install Löve2D on your favorite Linux and use "love . [FILE_NAME].love"
-Enjoy the game !
