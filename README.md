@@ -22,3 +22,5 @@ Made by Valentin Pierrel for Ludum Dare #34
 Characters and images belong to the anime "Ookami to Koushinryou"
 
 Contact : valentin.pierrel@epitech.eu
+
+Ludum Dare topic : http://ludumdare.com/compo/ludum-dare-34/?action=preview&uid=45551
