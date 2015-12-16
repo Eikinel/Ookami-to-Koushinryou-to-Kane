@@ -3,7 +3,7 @@
 ## Push 12/16/2015
 
 ### at 1:38 AM
-* Changed value of taxes. Precious items like "pyrite" or "fourrure" weren't profitable enough.
+* Changed value of taxes. Precious items like "pyrite" or "fourrure" weren't profitable enough, so their taxes are less important.
 
 ### at 0:55 AM
 #### Difficulty increased
