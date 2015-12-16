@@ -13,8 +13,15 @@ You begin with 100 silver thorenis in your pocket, and you trade merchandises ov
 
 Are you ready to trade ? :)
 
-## Credits
+## How to play
+Trade your money with merchandises when they are low prices and sell them otherwise.
 
+At the beginning, you can only buy "clous" (nails), "poivre" (pepper) and "armure" (armor).
+
+If you fall below 50 silver thorenis and you don't have any merchandise, you lost by bankruptcy !
+But if you are a clever salesman and reach 4000 silver thorenis, congratulations !
+
+## Credits
 Ookami to Koushinryou to Kane
 
 Made by Valentin Pierrel for Ludum Dare #34
