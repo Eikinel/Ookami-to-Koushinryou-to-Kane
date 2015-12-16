@@ -1,3 +1,5 @@
+require("AnAL")
+
 function love.load()
    -- FONTS --
    animeFont50 = love.graphics.setNewFont("res/font/animeace2_reg.ttf", 50)
@@ -20,6 +22,9 @@ function love.load()
    speed_x3 = love.graphics.newImage("res/img/speed_x3.png");
    pause_menu = love.graphics.newImage("res/img/pause_menu.png");
    bourse = love.graphics.newImage("res/img/bourse.png");
+   glow = love.graphics.newImage("res/img/glow_sprites.png");
+   anim_glow = newAnimation(glow, 241, 242, 0.09, 0)
+   anim_glow:setMode("bounce")
    
    --SOUNDS --
    opening = love.audio.newSource("res/sound/opening.mp3")
@@ -103,6 +108,7 @@ end
 
 function love.update(dt)
 
+   anim_glow:update(dt)
    if not is_paused then
       if (checkState() < 8) then
 	 checkLoseOrWin()
@@ -479,12 +485,7 @@ function love.draw()
       
       love.audio.play(opening)
       love.graphics.draw(start_background, 0, 0)
-      love.graphics.setFont(animeFont50)
---      love.graphics.print("Ookami to Koushinryou to Kane", 125, 70)
-  --    while (j <= 205) do
---	 love.graphics.line(250, j, 1000, j)
---	 j = j + 1
-  --    end
+      anim_glow:draw(700, 100)
       love.graphics.setFont(animeFont30)
       setColorOrNot(400, 350, 840, 380)
       love.graphics.print("Commencer une partie", 400, 350)

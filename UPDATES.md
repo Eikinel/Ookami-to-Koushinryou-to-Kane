@@ -2,6 +2,9 @@
 
 ## Push 12/16/2015
 
+### at 5:30 AM
+* New COOL EFFECT on the first screen ! The word "gold" GLOWS ! :O
+
 ### at 4:00 AM
 * The main background has been updated, it's now more beautiful :3
 * Add the ORIGINAL FOLDER from Ludum Dare #34. It will NOT be update !
