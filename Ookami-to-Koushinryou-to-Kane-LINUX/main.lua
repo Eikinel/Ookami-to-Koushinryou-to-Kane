@@ -49,10 +49,10 @@ function love.load()
    item5.b_min = 300
    item5.b_max = 400
    item1.taxe = 8 / 100
-   item2.taxe = 15 / 100
-   item3.taxe = 25 / 100
-   item4.taxe = 18 / 100
-   item5.taxe = 35 / 100
+   item2.taxe = 13 / 100
+   item3.taxe = 18 / 100
+   item4.taxe = 15 / 100
+   item5.taxe = 22 / 100
    item1.dt_nobuy = 1
    item2.dt_nobuy = 1
    item3.dt_nobuy = 1
