@@ -480,11 +480,11 @@ function love.draw()
       love.audio.play(opening)
       love.graphics.draw(start_background, 0, 0)
       love.graphics.setFont(animeFont50)
-      love.graphics.print("Ookami to Koushinryou to Kane", 125, 70)
-      while (j <= 205) do
-	 love.graphics.line(250, j, 1000, j)
-	 j = j + 1
-      end
+--      love.graphics.print("Ookami to Koushinryou to Kane", 125, 70)
+  --    while (j <= 205) do
+--	 love.graphics.line(250, j, 1000, j)
+--	 j = j + 1
+  --    end
       love.graphics.setFont(animeFont30)
       setColorOrNot(400, 350, 840, 380)
       love.graphics.print("Commencer une partie", 400, 350)
