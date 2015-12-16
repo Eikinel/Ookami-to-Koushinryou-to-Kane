@@ -2,11 +2,15 @@
 
 ## Push 12/16/2015
 
+### at 2:00 PM
+* New langage added ! The game runs with the english version, and you can switch to french on start screen.
+* You will have soon more statistics at the end of the game ! Time is coded, not implemented, but I must push right now. 
+
 ### at 5:30 AM
 * New COOL EFFECT on the first screen ! The word "gold" GLOWS ! :O
 
 ### at 4:00 AM
-* The main background has been updated, it's now more beautiful :3
+* The main background has been updated, it's now more beautiful. :3
 * Add the ORIGINAL FOLDER from Ludum Dare #34. It will NOT be update !
 
 ### at 1:38 AM

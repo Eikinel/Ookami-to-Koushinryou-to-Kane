@@ -1,5 +1,5 @@
 echo "== copying main.lua from sources folder =="
-cp sources/main.lua Ookami-to-Koushinryou-to-Kane-LINUX/
+cp sources/main.lua sources/main_FR.lua Ookami-to-Koushinryou-to-Kane-LINUX/
 echo "== creating a .love file for Linux =="
 cd Ookami-to-Koushinryou-to-Kane-LINUX/
 zip -9rq Ookami-to-Koushinryou-to-Kane.love .
