@@ -30,19 +30,42 @@ function love.load()
    win = love.audio.newSource("res/sound/win.mp3", "static")
 
    money:setVolume(0.6)
-   
-   -- OTHERS --
 
-   states = {false, false, false, false, false, false, false, false, false, true, false}
-   last_state = 1
-   is_paused = false
-   i = 2
-   dtotal = 0
+   -- ITEMS PRICES --
+   
    item1 = {15, 15}
    item2 = {30, 30}
    item3 = {80, 80}
    item4 = {100, 100}
    item5 = {300, 300}
+   item1.b_min = 5
+   item1.b_max = 20
+   item2.b_min = 15
+   item2.b_max = 40
+   item3.b_min = 50
+   item3.b_max = 100
+   item4.b_min = 100
+   item4.b_max = 200
+   item5.b_min = 300
+   item5.b_max = 400
+   item1.taxe = 8 / 100
+   item2.taxe = 15 / 100
+   item3.taxe = 25 / 100
+   item4.taxe = 18 / 100
+   item5.taxe = 35 / 100
+   item1.dt_nobuy = 1
+   item2.dt_nobuy = 1
+   item3.dt_nobuy = 1
+   item4.dt_nobuy = 1
+   item5.dt_nobuy = 1
+   
+   -- ITEMS VALUES FOR GRAPH ONLY --
+
+   item1.b_add = 2
+   item2.b_add = 5
+   item3.b_add = 10
+   item4.b_add = 20
+   item5.b_add = 50
    item1.x = {150, 150}
    item2.x = {150, 150}
    item3.x = {150, 150}
@@ -53,23 +76,7 @@ function love.load()
    item3.y = {600, 600}
    item4.y = {600, 600}
    item5.y = {600, 600}
-   item1.b_min = 5
-   item1.b_max = 20
-   item1.b_add = 2
-   item2.b_min = 15
-   item2.b_max = 40
-   item2.b_add = 5
-   item3.b_min = 50
-   item3.b_max = 100
-   item3.b_add = 10
-   item4.b_min = 100
-   item4.b_max = 200
-   item4.b_add = 20
-   item5.b_min = 300
-   item5.b_max = 400
-   item5.b_add = 50
-   love.keyboard.setKeyRepeat = false
-   
+
    -- INVENTORY --
 
    argent = 100
@@ -83,20 +90,25 @@ function love.load()
    item3.total = 0
    item4.total = 0
    item5.total = 0
-   item1.taxe = 8 / 100
-   item2.taxe = 15 / 100
-   item3.taxe = 25 / 100
-   item4.taxe = 18 / 100
-   item5.taxe = 35 / 100
+   
+   -- OTHERS --
+
+   states = {false, false, false, false, false, false, false, false, false, true, false}
+   last_state = 1
+   is_paused = false
+   i = 2
+   dtotal = 0   
+   love.keyboard.setKeyRepeat = false
 end
 
 function love.update(dt)
 
    if not is_paused then
       if (checkState() < 8) then
+	 checkLoseOrWin()
 	 i = 2
 	 dtotal = dtotal + dt
-	 checkLoseOrWin()
+	 if (item1.dt_nobuy > 0.8) then item1.dt_nobuy = item1.dt_nobuy - (dt / 10) end
       end
 
       if (dtotal >= 0.1) then
@@ -131,23 +143,23 @@ function love.update(dt)
 	    end
 	 end
 	 
-	 item1[i] = math.abs(math.random(item1[i - 1] - 1, item1[i - 1] + 1))
+	 item1[i] = math.abs(math.random(item1[i - 1] - (item1.inventory / 50) * item1.dt_nobuy - 1, item1[i - 1] + 1))
 	 adjustPrice(item1[i], item1)
 	 item1.x[i] = item1.x[i - 1] + 1
 	 
-	 item2[i] = math.abs(math.random(item2[i - 1] - 2, item2[i - 1] + 2))
+	 item2[i] = math.abs(math.random(item2[i - 1] - (item2.inventory / 30) * item2.dt_nobuy - 2, item2[i - 1] + 2))
 	 adjustPrice(item2[i], item2)
 	 item2.x[i] = item2.x[i - 1] + 1
 	 
-	 item3[i] = math.abs(math.random(item3[i - 1] - 3, item3[i - 1] + 3))
+	 item3[i] = math.abs(math.random(item3[i - 1] - (item3.inventory / 20) * item2.dt_nobuy - 3, item3[i - 1] + 3))
 	 adjustPrice(item3[i], item3)
 	 item3.x[i] = item3.x[i - 1] + 1
 	 
-	 item4[i] = math.abs(math.random(item4[i - 1] - 4, item4[i - 1] + 4))
+	 item4[i] = math.abs(math.random(item4[i - 1] - (item4.inventory / 10) * item2.dt_nobuy - 4, item4[i - 1] + 4))
 	 adjustPrice(item4[i], item4)
 	 item4.x[i] = item4.x[i - 1] + 1
 	 
-	 item5[i] = math.abs(math.random(item5[i - 1] - 5, item5[i - 1] + 5))
+	 item5[i] = math.abs(math.random(item5[i - 1] - (item5.inventory / 5) * item2.dt_nobuy - 5, item5[i - 1] + 5))
 	 adjustPrice(item5[i], item5)
 	 item5.x[i] = item5.x[i - 1] + 1
       end
@@ -374,9 +386,9 @@ function love.draw()
       love.graphics.print("Dans l'inventaire :", 200, 220)
       love.graphics.print(item1.inventory, 350, 220)
       love.graphics.print("Prix à la revente :", 200, 260)
-      love.graphics.print(item1[lastItem()] * item1.inventory - (item1[lastItem()] * item1.inventory * item1.taxe) , 350, 260)
+      love.graphics.print(round(item1[lastItem()] * item1.inventory - (item1[lastItem()] * item1.inventory * item1.taxe), 2) , 350, 260)
       love.graphics.print("Prix de tous les achats :", 200, 300)
-      love.graphics.print(item1.total, 410, 300)
+      love.graphics.print(round(item1.total, 2), 410, 300)
       
       -- Poivre --
 
@@ -384,9 +396,9 @@ function love.draw()
       love.graphics.print("Dans l'inventaire :", 530, 220)
       love.graphics.print(item2.inventory, 680, 220)
       love.graphics.print("Prix à la revente :", 530, 260)
-      love.graphics.print(item2[lastItem()] * item2.inventory - (item2[lastItem()] * item2.inventory * item2.taxe) , 680, 260)
+      love.graphics.print(round(item2[lastItem()] * item2.inventory - (item2[lastItem()] * item2.inventory * item2.taxe), 2), 680, 260)
       love.graphics.print("Prix de tous les achats :", 530, 300)
-      love.graphics.print(item2.total, 740, 300)
+      love.graphics.print(round(item2.total, 2), 740, 300)
       
       -- Armure --
       
@@ -394,9 +406,9 @@ function love.draw()
       love.graphics.print("Dans l'inventaire :", 860, 220)
       love.graphics.print(item3.inventory, 1010, 220)
       love.graphics.print("Prix à la revente :", 860, 260)
-      love.graphics.print(item3[lastItem()] * item3.inventory - (item3[lastItem()] * item3.inventory * item3.taxe) , 1010, 260)
+      love.graphics.print(round(item3[lastItem()] * item3.inventory - (item3[lastItem()] * item3.inventory * item3.taxe), 2), 1010, 260)
       love.graphics.print("Prix de tous les achats :", 860, 300)
-      love.graphics.print(item3.total, 1070, 300)
+      love.graphics.print(round(item3.total, 2), 1070, 300)
       
       -- Fourrure --
 
@@ -404,9 +416,9 @@ function love.draw()
       love.graphics.print("Dans l'inventaire :", 360, 420)
       love.graphics.print(item4.inventory, 510, 420)
       love.graphics.print("Prix à la revente :", 360, 460)
-      love.graphics.print(item4[lastItem()] * item4.inventory - (item4[lastItem()] * item4.inventory * item4.taxe) , 510, 460)
+      love.graphics.print(round(item4[lastItem()] * item4.inventory - (item4[lastItem()] * item4.inventory * item4.taxe), 2), 510, 460)
       love.graphics.print("Prix de tous les achats :", 360, 500)
-      love.graphics.print(item4.total, 570, 500)
+      love.graphics.print(round(item4.total, 2), 570, 500)
       
       -- Pyrite --
 
@@ -414,9 +426,9 @@ function love.draw()
       love.graphics.print("Dans l'inventaire :", 710, 420)
       love.graphics.print(item5.inventory, 860, 420)
       love.graphics.print("Prix à la revente :", 710, 460)
-      love.graphics.print(item5[lastItem()] * item5.inventory - (item5[lastItem()] * item5.inventory * item5.taxe) , 860, 460)
+      love.graphics.print(round(item5[lastItem()] * item5.inventory - (item5[lastItem()] * item5.inventory * item5.taxe), 2), 860, 460)
       love.graphics.print("Prix de tous les achats :", 710, 500)
-      love.graphics.print(item5.total, 920, 500)
+      love.graphics.print(round(item5.total, 2), 920, 500)
 
       if not is_paused then
 	 love.graphics.setColor(255, 255, 255)
@@ -678,6 +690,11 @@ function buyItem(nb_item, many)
       argent = argent - (nb_item[lastItem()] * many)
       nb_item.inventory = nb_item.inventory + many
       nb_item.total = nb_item.total + (nb_item[lastItem()] * many)
+      item1.dt_nobuy = 1.5
+      item2.dt_nobuy = 1.5
+      item3.dt_nobuy = 1.5
+      item4.dt_nobuy = 1.5
+      item5.dt_nobuy = 1.5
       love.audio.play(money)
       love.audio.play(arigato[math.random(4)])
    end	    
@@ -693,24 +710,24 @@ end
 
 function adjustPrice(item_price, nb_item)
    if (nb_item == item1) then
-      if (item_price > item1.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem()] - 1, nb_item[lastItem()])
-      elseif (item_price < item1.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem()], nb_item[lastItem()] + 1) end
+      if (item_price > item1.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1] - 1, nb_item[lastItem()])
+      elseif (item_price < item1.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1], nb_item[lastItem()] + 1) end
 
    elseif (nb_item == item2) then
-      if (item_price > item2.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem()] - 2, nb_item[lastItem()])
-      elseif (item_price < item2.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem()], nb_item[lastItem()] + 2) end
+      if (item_price > item2.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1] - 2, nb_item[lastItem()])
+      elseif (item_price < item2.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1], nb_item[lastItem()] + 2) end
 
    elseif (nb_item == item3) then
-      if (item_price > item3.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem()] - 3, nb_item[lastItem()])
-      elseif (item_price < item3.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem()], nb_item[lastItem()] + 3) end
+      if (item_price > item3.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1] - 3, nb_item[lastItem()])
+      elseif (item_price < item3.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1], nb_item[lastItem()] + 3) end
 
    elseif (nb_item == item4) then
-      if (item_price > item4.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem()] - 4, nb_item[lastItem()])
-      elseif (item_price < item4.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem()], nb_item[lastItem()] + 4) end
+      if (item_price > item4.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1] - 4, nb_item[lastItem()])
+      elseif (item_price < item4.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1], nb_item[lastItem()] + 4) end
 
    elseif (nb_item == item5) then
-      if (item_price > item5.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem()] - 5, nb_item[lastItem()])
-      elseif (item_price < item5.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem()], nb_item[lastItem()] + 5) end
+      if (item_price > item5.b_max) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1] - 5, nb_item[lastItem()])
+      elseif (item_price < item5.b_min) then nb_item[lastItem()] = math.random(nb_item[lastItem() - 1], nb_item[lastItem()] + 5) end
    end
 end
 
