@@ -7,7 +7,7 @@
 
 ### at 4:00 AM
 * The main background has been updated, it's now more beautiful :3
-* Add the ORIGINAL FOLDER from Ludum Dare #34. It will NOT be update !
+* Add the ORIGINAL FOLDER from Ludum Dare #34. It will NOT be updated !
 
 ### at 1:38 AM
 * Changed value of taxes. Precious items like "pyrite" or "fourrure" weren't profitable enough, so their taxes are less important.
