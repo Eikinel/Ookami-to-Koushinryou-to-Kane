@@ -172,8 +172,8 @@ function love.update(dt)
    end
 end
 
-function love.mousepressed(x, y, button)
-   if (button == "l") then
+function love.mousepressed(x, y, button, istouch)
+   if (button == 1) then
 
       -- Si on est en pause --
       if is_paused then

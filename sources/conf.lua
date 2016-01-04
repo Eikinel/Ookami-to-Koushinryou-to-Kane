@@ -1,5 +1,5 @@
 function love.conf(t)
-   t.version = "0.9.2"
+   t.version = "0.10.0"
    
    t.window.title = "Ookami to Koushinryou to Kane"
    t.window.icon = "res/img/bourse.png"

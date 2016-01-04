@@ -1,5 +1,10 @@
 # Updates push-by-push
 
+## Push 01/04/2016
+
+### at 2:50 PM
+* Compatible with 0.10.0 löve version.
+
 ## Push 12/16/2015
 
 ### at 2:00 PM

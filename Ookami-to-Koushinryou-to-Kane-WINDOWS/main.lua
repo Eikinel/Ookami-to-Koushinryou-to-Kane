@@ -84,7 +84,7 @@ function love.load()
 
    -- INVENTORY --
 
-   argent = 100
+   argent = 1999
    item1.inventory = 0
    item2.inventory = 0
    item3.inventory = 0
@@ -102,18 +102,23 @@ function love.load()
    last_state = 1
    is_paused = false
    i = 2
-   dtotal = 0   
+   dtotal = 0
+   realtime_elapsed = 0
+   gametime_elapsed = 0
+   pixel = 0
    love.keyboard.setKeyRepeat = false
 end
 
 function love.update(dt)
 
-   anim_glow:update(dt)
    if not is_paused then
+      anim_glow:update(dt)
       if (checkState() < 8) then
 	 checkLoseOrWin()
 	 i = 2
 	 dtotal = dtotal + dt
+	 realtime_elapsed = realtime_elapsed + dt
+	 gametime_elapsed = math.floor((realtime_elapsed * 0.14) * 100)
 	 if (item1.dt_nobuy > 0.8) then item1.dt_nobuy = item1.dt_nobuy - (dt / 10) end
       end
 
@@ -124,6 +129,7 @@ function love.update(dt)
 	 end
 	 
 	 if (i > 1026) then
+	    dtotal = 0
 	    while (i > 2) do
 	       item1[i] = nil
 	       item1.x[i] = nil
@@ -149,48 +155,48 @@ function love.update(dt)
 	    end
 	 end
 	 
-	 item1[i] = math.abs(math.random(item1[i - 1] - (item1.inventory / 50) * item1.dt_nobuy - 1, item1[i - 1] + 1))
+	 item1[i] = math.abs(math.random(item1[i - 1] - 1, item1[i - 1] + (item1.inventory / 50) + 1))
 	 adjustPrice(item1[i], item1)
 	 item1.x[i] = item1.x[i - 1] + 1
 	 
-	 item2[i] = math.abs(math.random(item2[i - 1] - (item2.inventory / 30) * item2.dt_nobuy - 2, item2[i - 1] + 2))
+	 item2[i] = math.abs(math.random(item2[i - 1] - 2, item2[i - 1] + (item1.inventory / 50) + 2))
 	 adjustPrice(item2[i], item2)
 	 item2.x[i] = item2.x[i - 1] + 1
 	 
-	 item3[i] = math.abs(math.random(item3[i - 1] - (item3.inventory / 20) * item2.dt_nobuy - 3, item3[i - 1] + 3))
+	 item3[i] = math.abs(math.random(item3[i - 1] - 3, item3[i - 1] + (item1.inventory / 50) + 3))
 	 adjustPrice(item3[i], item3)
 	 item3.x[i] = item3.x[i - 1] + 1
 	 
-	 item4[i] = math.abs(math.random(item4[i - 1] - (item4.inventory / 10) * item2.dt_nobuy - 4, item4[i - 1] + 4))
+	 item4[i] = math.abs(math.random(item4[i - 1] - 4, item4[i - 1] + (item1.inventory / 50) + 4))
 	 adjustPrice(item4[i], item4)
 	 item4.x[i] = item4.x[i - 1] + 1
 	 
-	 item5[i] = math.abs(math.random(item5[i - 1] - (item5.inventory / 5) * item2.dt_nobuy - 5, item5[i - 1] + 5))
+	 item5[i] = math.abs(math.random(item5[i - 1] - 5, item5[i - 1] + (item1.inventory / 50) + 5))
 	 adjustPrice(item5[i], item5)
 	 item5.x[i] = item5.x[i - 1] + 1
       end
    end
 end
 
-function love.mousepressed(x, y, button)
-   if (button == "l") then
+function love.mousepressed(x, y, button, istouch)
+   if (button == 1) then
 
       -- Si on est en pause --
       if is_paused then
-	 if ((x >= 530 and y >= 300) and (x <= 740 and y <= 330)) then is_paused = false
-	 elseif ((x >= 500 and y >= 400) and (x <= 775 and y <= 430)) then
+	 if ((x >= 560 and y >= 300) and (x <= 705 and y <= 330)) then is_paused = false
+	 elseif ((x >= 580 and y >= 400) and (x <= 680 and y <= 430)) then
 	    love.load()
 	    setStatesFalse(1)
 	    is_paused = false
-	 elseif ((x >= 560 and y >= 500) and (x <= 705 and y <= 530)) then love.event.quit() end
+	 elseif ((x >= 590 and y >= 500) and (x <= 670 and y <= 530)) then love.event.quit() end
 	 	 
 	 -- Si on est à l'écran de départ --
       elseif (states[1] == true) then
-	 if ((x >= 610 and y >= 60) and (x <= 700 and y <= 80)) then setStatesFalse(2)
-	 elseif ((x >= 605 and y >= 90) and (x <= 690 and y <= 110)) then setStatesFalse(3)
-	 elseif ((x >= 595 and y >= 120) and (x <= 710 and y <= 140)) then setStatesFalse(4)
-	 elseif ((x >= 575 and y >= 150) and (x <= 720 and y <= 170)) then setStatesFalse(5)
-	 elseif ((x >= 605 and y >= 180) and (x <= 690 and y <= 200)) then setStatesFalse(6)
+	 if ((x >= 630 and y >= 60) and (x <= 680 and y <= 80)) then setStatesFalse(2)
+	 elseif ((x >= 610 and y >= 90) and (x <= 700 and y <= 110)) then setStatesFalse(3)
+	 elseif ((x >= 610 and y >= 120) and (x <= 695 and y <= 140)) then setStatesFalse(4)
+	 elseif ((x >= 630 and y >= 150) and (x <= 680 and y <= 170)) then setStatesFalse(5)
+	 elseif ((x >= 610 and y >= 180) and (x <= 690 and y <= 200)) then setStatesFalse(6)
 	 elseif ((x >= 1050 and y >= 20) and (x <= 1233 and y <= 180)) then setStatesFalse(7) end
 
 	 -- Si on est dans l'inventaire --
@@ -199,15 +205,16 @@ function love.mousepressed(x, y, button)
 	 
 	 -- Si on a perdu ou gagné --
       elseif (states[8] == true or states[9] == true) then
-	 if ((x >= 500 and y >= 400) and (x <= 775 and y <= 430)) then
+	 if ((x >= 560 and y >= 400) and (x <= 670 and y <= 430)) then
 	    love.load()
 	    setStatesFalse(1)
-	 elseif ((x >= 570 and y >= 460) and (x <= 715 and y <= 490)) then love.event.quit() end
-	 
+	 elseif ((x >= 570 and y >= 460) and (x <= 650 and y <= 490)) then love.event.quit() end
+	 	 
 	 -- Si on est au menu principal
       elseif (states[10] == true) then
-	 if ((x >= 400 and y >= 350) and (x <= 840 and y <= 380)) then setStatesFalse(1)
-	 elseif ((x >= 550 and y >= 450) and (x <= 695 and y <= 480)) then love.event.quit() end
+	 if ((x >= 480 and y >= 350) and (x <= 730 and y <= 380)) then setStatesFalse(1)
+	 elseif ((x >= 430 and y >= 450) and (x <= 785 and y <= 480)) then dofile("main_FR.lua")
+	 elseif ((x >= 570 and y >= 550) and (x <= 650 and y <= 580)) then love.event.quit() end
 	 
 	 -- Si on est dans les cours de la bourse --
       else
@@ -224,18 +231,18 @@ function love.mousepressed(x, y, button)
 end
 
 function love.keypressed(key, isrepeat)
-   if ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and states[10] == false and not is_paused) then
+   if ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and checkState() < 8 and not is_paused) then
       is_paused = true
       love.graphics.setColor(150, 150, 150)
 
-   elseif ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and states[10] == false and is_paused) then
+   elseif ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and checkState() < 8 and is_paused) then
       is_paused = false
       love.graphics.setColor(255, 255, 255)
    end
 end
 
 function love.draw()
-  
+
    if (states[10] == false) then
       love.audio.stop(opening)
       love.audio.play(foule)
@@ -249,21 +256,21 @@ function love.draw()
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
       love.graphics.setFont(animeFont20)
-
-      setColorOrNot(610, 60, 700, 80)
-      love.graphics.print("Clou", 620, 60)
       
-      setColorOrNot(605, 90, 690, 110)
-      love.graphics.print("Poivre", 610, 90)
+      setColorOrNot(630, 60, 680, 80)
+      love.graphics.print("Nail", 630, 60)
       
-      setColorOrNot(595, 120, 710, 140)
-      love.graphics.print("Armure", 605, 120)
+      setColorOrNot(610, 90, 700, 110)
+      love.graphics.print("Pepper", 610, 90)
       
-      setColorOrNot(575, 150, 720, 170)
-      love.graphics.print("Fourrure", 585, 150)
+      setColorOrNot(610, 120, 695, 140)
+      love.graphics.print("Armor", 610, 120)
       
-      setColorOrNot(605, 180, 690, 200)
-      love.graphics.print("Pyrite", 605, 180)
+      setColorOrNot(630, 150, 680, 170)
+      love.graphics.print("Fur", 630, 150)
+      
+      setColorOrNot(610, 180, 690, 200)
+      love.graphics.print("Pyrite", 610, 180)
 
       if not is_paused then
 	 love.graphics.setColor(255, 255, 255)
@@ -279,11 +286,11 @@ function love.draw()
       love.graphics.draw(woodsign, 700, 620)      
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
-      love.graphics.print("Cours de la bourse du clou", 370, 60)
+      love.graphics.print("Nail market price", 480, 60)
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Taxe à la vente :", 550, 110)
-      love.graphics.print(round(item1.taxe * 100, 2), 690, 110)
-      love.graphics.print("%", 730, 110)
+      love.graphics.print("Sales tax :", 570, 110)
+      love.graphics.print(round(item1.taxe * 100, 2), 670, 110)
+      love.graphics.print("%", 700, 110)
       buySellSigns(item1)      
       axesGraph(item1)
       writeGraph(item1)
@@ -298,11 +305,11 @@ function love.draw()
       love.graphics.draw(woodsign, 700, 620)
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
-      love.graphics.print("Cours de la bourse du poivre", 365, 60)
+      love.graphics.print("Pepper market price", 460, 60)
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Taxe à la vente :", 550, 110)
-      love.graphics.print(round(item2.taxe * 100, 2), 690, 110)
-      love.graphics.print("%", 730, 110)
+      love.graphics.print("Sales tax :", 580, 110)
+      love.graphics.print(round(item2.taxe * 100, 2), 680, 110)
+      love.graphics.print("%", 710, 110)
       buySellSigns(item2)
       axesGraph(item2)
       writeGraph(item2)
@@ -317,11 +324,11 @@ function love.draw()
       love.graphics.draw(woodsign, 700, 620)
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
-      love.graphics.print("Cours de la bourse de l'armure", 350, 60)
+      love.graphics.print("Armor market price", 470, 60)
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Taxe à la vente :", 550, 110)
-      love.graphics.print(round(item3.taxe * 100, 2), 690, 110)
-      love.graphics.print("%", 730, 110)
+      love.graphics.print("Sales tax :", 580, 110)
+      love.graphics.print(round(item3.taxe * 100, 2), 680, 110)
+      love.graphics.print("%", 710, 110)
       buySellSigns(item3)
       axesGraph(item3)
       writeGraph(item3)
@@ -336,10 +343,10 @@ function love.draw()
       love.graphics.draw(woodsign, 700, 620)
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
-      love.graphics.print("Cours de la bourse de la fourrure", 320, 60)
+      love.graphics.print("Fur market price", 500, 60)
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Taxe à la vente :", 550, 110)
-      love.graphics.print(round(item4.taxe * 100, 2), 690, 110)
+      love.graphics.print("Sales tax :", 600, 110)
+      love.graphics.print(round(item4.taxe * 100, 2), 700, 110)
       love.graphics.print("%", 730, 110)
       buySellSigns(item4)
       axesGraph(item4)
@@ -355,11 +362,11 @@ function love.draw()
       love.graphics.draw(woodsign, 700, 620)
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
-      love.graphics.print("Cours de la bourse de la pyrite", 350, 60)
+      love.graphics.print("Pyrite market price", 470, 60)
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Taxe à la vente :", 550, 110)
+      love.graphics.print("Sales tax :", 590, 110)
       love.graphics.print(round(item5.taxe * 100, 2), 690, 110)
-      love.graphics.print("%", 730, 110)
+      love.graphics.print("%", 720, 110)
       buySellSigns(item5)
       axesGraph(item5)
       writeGraph(item5)
@@ -377,64 +384,64 @@ function love.draw()
 
       love.graphics.setFont(animeFont30)
       love.graphics.print(round(argent, 2), 160, 60)
-      love.graphics.print("Inventaire", 550, 60)
+      love.graphics.print("Inventory", 550, 60)
       
       love.graphics.setFont(animeFont20)
-      love.graphics.print("Clou", 280, 170)
-      love.graphics.print("Poivre", 610, 170)
-      love.graphics.print("Armure", 940, 170)
-      love.graphics.print("Fourrure", 420, 370)
+      love.graphics.print("Nail", 300, 170)
+      love.graphics.print("Pepper", 610, 170)
+      love.graphics.print("Armor", 940, 170)
+      love.graphics.print("Fur", 460, 370)
       love.graphics.print("Pyrite", 790, 370)
       
       -- Clou --
 
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Dans l'inventaire :", 200, 220)
-      love.graphics.print(item1.inventory, 350, 220)
-      love.graphics.print("Prix à la revente :", 200, 260)
-      love.graphics.print(round(item1[lastItem()] * item1.inventory - (item1[lastItem()] * item1.inventory * item1.taxe), 2) , 350, 260)
-      love.graphics.print("Prix de tous les achats :", 200, 300)
-      love.graphics.print(round(item1.total, 2), 410, 300)
+      love.graphics.print("In inventory :", 200, 220)
+      love.graphics.print(item1.inventory, 320, 220)
+      love.graphics.print("Resale price :", 200, 260)
+      love.graphics.print(round(item1[lastItem()] * item1.inventory - (item1[lastItem()] * item1.inventory * item1.taxe), 2) , 320, 260)
+      love.graphics.print("All items prices :", 200, 300)
+      love.graphics.print(round(item1.total, 2), 350, 300)
       
       -- Poivre --
 
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Dans l'inventaire :", 530, 220)
-      love.graphics.print(item2.inventory, 680, 220)
-      love.graphics.print("Prix à la revente :", 530, 260)
-      love.graphics.print(round(item2[lastItem()] * item2.inventory - (item2[lastItem()] * item2.inventory * item2.taxe), 2), 680, 260)
-      love.graphics.print("Prix de tous les achats :", 530, 300)
-      love.graphics.print(round(item2.total, 2), 740, 300)
+      love.graphics.print("In inventory :", 530, 220)
+      love.graphics.print(item2.inventory, 650, 220)
+      love.graphics.print("Resale price :", 530, 260)
+      love.graphics.print(round(item2[lastItem()] * item2.inventory - (item2[lastItem()] * item2.inventory * item2.taxe), 2), 650, 260)
+      love.graphics.print("All items prices :", 530, 300)
+      love.graphics.print(round(item2.total, 2), 680, 300)
       
       -- Armure --
       
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Dans l'inventaire :", 860, 220)
-      love.graphics.print(item3.inventory, 1010, 220)
-      love.graphics.print("Prix à la revente :", 860, 260)
-      love.graphics.print(round(item3[lastItem()] * item3.inventory - (item3[lastItem()] * item3.inventory * item3.taxe), 2), 1010, 260)
-      love.graphics.print("Prix de tous les achats :", 860, 300)
-      love.graphics.print(round(item3.total, 2), 1070, 300)
+      love.graphics.print("In inventory :", 860, 220)
+      love.graphics.print(item3.inventory, 980, 220)
+      love.graphics.print("Resale price :", 860, 260)
+      love.graphics.print(round(item3[lastItem()] * item3.inventory - (item3[lastItem()] * item3.inventory * item3.taxe), 2), 980, 260)
+      love.graphics.print("All items prices :", 860, 300)
+      love.graphics.print(round(item3.total, 2), 1010, 300)
       
       -- Fourrure --
 
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Dans l'inventaire :", 360, 420)
-      love.graphics.print(item4.inventory, 510, 420)
-      love.graphics.print("Prix à la revente :", 360, 460)
-      love.graphics.print(round(item4[lastItem()] * item4.inventory - (item4[lastItem()] * item4.inventory * item4.taxe), 2), 510, 460)
-      love.graphics.print("Prix de tous les achats :", 360, 500)
-      love.graphics.print(round(item4.total, 2), 570, 500)
+      love.graphics.print("In inventory :", 360, 420)
+      love.graphics.print(item4.inventory, 480, 420)
+      love.graphics.print("Resale price :", 360, 460)
+      love.graphics.print(round(item4[lastItem()] * item4.inventory - (item4[lastItem()] * item4.inventory * item4.taxe), 2), 480, 460)
+      love.graphics.print("All items prices :", 360, 500)
+      love.graphics.print(round(item4.total, 2), 510, 500)
       
       -- Pyrite --
 
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Dans l'inventaire :", 710, 420)
-      love.graphics.print(item5.inventory, 860, 420)
-      love.graphics.print("Prix à la revente :", 710, 460)
-      love.graphics.print(round(item5[lastItem()] * item5.inventory - (item5[lastItem()] * item5.inventory * item5.taxe), 2), 860, 460)
-      love.graphics.print("Prix de tous les achats :", 710, 500)
-      love.graphics.print(round(item5.total, 2), 920, 500)
+      love.graphics.print("In inventory :", 710, 420)
+      love.graphics.print(item5.inventory, 830, 420)
+      love.graphics.print("Resale price :", 710, 460)
+      love.graphics.print(round(item5[lastItem()] * item5.inventory - (item5[lastItem()] * item5.inventory * item5.taxe), 2), 830, 460)
+      love.graphics.print("All items prices :", 710, 500)
+      love.graphics.print(round(item5.total, 2), 860, 500)
 
       if not is_paused then
 	 love.graphics.setColor(255, 255, 255)
@@ -445,18 +452,18 @@ function love.draw()
       love.audio.stop(foule)
       love.graphics.draw(lose_background, 0, 0)
       love.graphics.setFont(animeFont50)
-      love.graphics.print("Oh, non !", 500, 200)
+      love.graphics.print("Oh, no !", 500, 200)
       love.graphics.setFont(animeFont30)
-      love.graphics.print("Vous avez fait faillite !", 420, 280)
+      love.graphics.print("You were bankrupt !", 420, 280)
       love.graphics.setFont(animeFont12)
-      love.graphics.print("Vous aviez peu d'argent et plus de marchandise", 455, 330)
+      love.graphics.print("You didn't have enough money and no merchandise left", 400, 330)
 
       love.graphics.setFont(animeFont30)
-      setColorOrNot(500, 400, 775, 430)
-      love.graphics.print("Recommencer", 500, 400)
+      setColorOrNot(560, 400, 670, 430)
+      love.graphics.print("Retry", 560, 400)
 
-      setColorOrNot(570, 460, 715, 490)
-      love.graphics.print("Quitter", 570, 460)
+      setColorOrNot(570, 460, 650, 490)
+      love.graphics.print("Quit", 570, 460)
       love.graphics.setColor(255, 255, 255)
    end
    
@@ -464,19 +471,37 @@ function love.draw()
       love.audio.stop(foule)
       love.graphics.draw(win_background, 0, 0)
       love.graphics.setFont(animeFont50)
-      love.graphics.print("Bien joué !", 460, 130)
+      love.graphics.print("Good job !", 450, 130)
       love.graphics.setFont(animeFont30)
-      love.graphics.print("Vous avez gagné assez d'argent", 350, 230)
-      love.graphics.print("pour acheter votre propre magasin !", 300, 280)
+      love.graphics.print("You earned enough money", 370, 230)
+      love.graphics.print("to buy your own shop !", 390, 280)
+
       love.graphics.setFont(animeFont12)
-      love.graphics.print("\"Le temps, c'est de l'argent\" - Craft Lawrence", 470, 330)
+      love.graphics.print("Statistics :", 50, 300)
+      love.graphics.print("Real time elapsed :", 50, 400)
+      love.graphics.print(round(realtime_elapsed / 60 / 24, 0), 250, 400)
+      love.graphics.print("h", 265, 400)
+      love.graphics.print(round(realtime_elapsed / 60, 0), 280, 400)
+      love.graphics.print("m", 295, 400)
+      love.graphics.print(round(realtime_elapsed % 60, 0), 310, 400)
+      love.graphics.print("s", 325, 400)
+      love.graphics.print("Game time elapsed :", 50, 450)
+      love.graphics.print(round(gametime_elapsed / 24, 0), 250, 450)
+      love.graphics.print("h", 265, 450)
+      love.graphics.print(round(gametime_elapsed % 60, 0), 280, 450)
+      love.graphics.print("m", 295, 450)
+      love.graphics.print(round((gametime_elapsed / 60) % 60, 0), 310, 450)
+      love.graphics.print("s", 325, 450)
+      love.graphics.print("Money spent :", 50, 500)
+      love.graphics.print(item1.total + item2.total + item3.total + item4.total + item5.total, 300, 500)
+      love.graphics.print("\"Time is money\" - Kraft Lawrence", 480, 330)
 
       love.graphics.setFont(animeFont30)
-      setColorOrNot(500, 400, 775, 430)
-      love.graphics.print("Recommencer", 500, 400)
+      setColorOrNot(560, 400, 670, 430)
+      love.graphics.print("Retry", 560, 400)
 
-      setColorOrNot(570, 460, 715, 490)
-      love.graphics.print("Quitter", 570, 460)
+      setColorOrNot(570, 460, 650, 490)
+      love.graphics.print("Quit", 570, 460)
       love.graphics.setColor(255, 255, 255)
    end
    
@@ -487,10 +512,12 @@ function love.draw()
       love.graphics.draw(start_background, 0, 0)
       anim_glow:draw(700, 100)
       love.graphics.setFont(animeFont30)
-      setColorOrNot(400, 350, 840, 380)
-      love.graphics.print("Commencer une partie", 400, 350)
-      setColorOrNot(550, 450, 695, 480)
-      love.graphics.print("Quitter", 550, 450)
+      setColorOrNot(480, 350, 740, 380)
+      love.graphics.print("Start a game", 480, 350)
+      setColorOrNot(430, 450, 785, 480)
+      love.graphics.print("Change to french", 430, 450)
+      setColorOrNot(570, 550, 650, 580)
+      love.graphics.print("Quit", 570, 550)
       love.graphics.setColor(255, 255, 255)
    end
 
@@ -502,14 +529,14 @@ function love.draw()
       love.graphics.line(425, 210, 850, 210)
       
       love.graphics.setFont(animeFont30)
-      setColorOrNotPaused(530, 300, 740, 330)
-      love.graphics.print("Reprendre", 530, 300)
+      setColorOrNotPaused(560, 300, 705, 330)
+      love.graphics.print("Resume", 560, 300)
 
-      setColorOrNotPaused(500, 400, 775, 430)
-      love.graphics.print("Recommencer", 500, 400)
+      setColorOrNotPaused(580, 400, 680, 430)
+      love.graphics.print("Retry", 580, 400)
 
-      setColorOrNotPaused(560, 500, 705, 530)
-      love.graphics.print("Quitter", 560, 500)
+      setColorOrNotPaused(590, 500, 670, 530)
+      love.graphics.print("Quit", 590, 500)
       
       love.graphics.setColor(150, 150, 150)
    end
@@ -579,7 +606,7 @@ function axesGraph(nb_item)
    
    love.graphics.line(150, 180, 150, 600)
    love.graphics.print("Thorenis/Kg (argent)", 80, 155)
-   love.graphics.print("Heures", 1150, 620)
+   love.graphics.print("Hours", 1150, 620)
 end
 
 function writeGraph(nb_item)
@@ -624,32 +651,32 @@ function buySellSigns(nb_item)
    if is_paused then love.graphics.setColor(75, 75, 75)
    elseif (argent - nb_item[lastItem()] >= 0) then setColorOrNot(360, 630, 450, 645)
    else love.graphics.setColor(150, 150, 150) end
-   love.graphics.print("Achat x1", 360, 630)
+   love.graphics.print("Buy x1", 360, 630)
 
    if is_paused then love.graphics.setColor(75, 75, 75)
    elseif (argent - (nb_item[lastItem()] * 5) >= 0) then setColorOrNot(360, 660, 450, 675)
    else love.graphics.setColor(150, 150, 150) end
-   love.graphics.print("Achat x5", 360, 660)
+   love.graphics.print("Buy x5", 360, 660)
 
    if is_paused then love.graphics.setColor(75, 75, 75)
    elseif (argent - (nb_item[lastItem()] * 10) >= 0) then setColorOrNot(360, 690, 450, 705)
    else love.graphics.setColor(150, 150, 150) end
-   love.graphics.print("Achat x10", 360, 690)
+   love.graphics.print("Buy x10", 360, 690)
 
    if is_paused then love.graphics.setColor(75, 75, 75)
    elseif (nb_item.inventory > 0) then setColorOrNot(880, 630, 970, 645)
    else love.graphics.setColor(150, 150, 150) end
-   love.graphics.print("Vente x1", 880, 630)
+   love.graphics.print("Sell x1", 880, 630)
 
    if is_paused then love.graphics.setColor(75, 75, 75)
    elseif (nb_item.inventory > 4) then setColorOrNot(880, 660, 970, 675)
    else love.graphics.setColor(150, 150, 150) end
-   love.graphics.print("Vente x5", 880, 660)
+   love.graphics.print("Sell x5", 880, 660)
 
    if is_paused then love.graphics.setColor(75, 75, 75)
    elseif (nb_item.inventory > 9) then setColorOrNot(880, 690, 970, 705)
    else love.graphics.setColor(150, 150, 150) end
-   love.graphics.print("Vente x10", 880, 690)
+   love.graphics.print("Sell x10", 880, 690)
 
    if not is_paused then love.graphics.setColor(255, 255, 255)
    else love.graphics.setColor(150, 150, 150) end
@@ -737,7 +764,7 @@ function checkLoseOrWin()
       love.audio.play(lose)
       setStatesFalse(8)
 
-   elseif (argent >= 4000) then
+   elseif (argent >= 2000) then
       love.audio.play(win)
       setStatesFalse(9)
    end

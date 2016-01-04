@@ -84,7 +84,7 @@ function love.load()
 
    -- INVENTORY --
 
-   argent = 100
+   argent = 1999
    item1.inventory = 0
    item2.inventory = 0
    item3.inventory = 0
@@ -155,31 +155,31 @@ function love.update(dt)
 	    end
 	 end
 	 
-	 item1[i] = math.abs(math.random(item1[i - 1] - (item1.inventory / 50) * item1.dt_nobuy - 1, item1[i - 1] + 1))
+	 item1[i] = math.abs(math.random(item1[i - 1] - 1, item1[i - 1] + (item1.inventory / 50) + 1))
 	 adjustPrice(item1[i], item1)
 	 item1.x[i] = item1.x[i - 1] + 1
 	 
-	 item2[i] = math.abs(math.random(item2[i - 1] - (item2.inventory / 30) * item2.dt_nobuy - 2, item2[i - 1] + 2))
+	 item2[i] = math.abs(math.random(item2[i - 1] - 2, item2[i - 1] + (item1.inventory / 50) + 2))
 	 adjustPrice(item2[i], item2)
 	 item2.x[i] = item2.x[i - 1] + 1
 	 
-	 item3[i] = math.abs(math.random(item3[i - 1] - (item3.inventory / 20) * item2.dt_nobuy - 3, item3[i - 1] + 3))
+	 item3[i] = math.abs(math.random(item3[i - 1] - 3, item3[i - 1] + (item1.inventory / 50) + 3))
 	 adjustPrice(item3[i], item3)
 	 item3.x[i] = item3.x[i - 1] + 1
 	 
-	 item4[i] = math.abs(math.random(item4[i - 1] - (item4.inventory / 10) * item2.dt_nobuy - 4, item4[i - 1] + 4))
+	 item4[i] = math.abs(math.random(item4[i - 1] - 4, item4[i - 1] + (item1.inventory / 50) + 4))
 	 adjustPrice(item4[i], item4)
 	 item4.x[i] = item4.x[i - 1] + 1
 	 
-	 item5[i] = math.abs(math.random(item5[i - 1] - (item5.inventory / 5) * item2.dt_nobuy - 5, item5[i - 1] + 5))
+	 item5[i] = math.abs(math.random(item5[i - 1] - 5, item5[i - 1] + (item1.inventory / 50) + 5))
 	 adjustPrice(item5[i], item5)
 	 item5.x[i] = item5.x[i - 1] + 1
       end
    end
 end
 
-function love.mousepressed(x, y, button)
-   if (button == "l") then
+function love.mousepressed(x, y, button, istouch)
+   if (button == 1) then
 
       -- Si on est en pause --
       if is_paused then
@@ -231,18 +231,18 @@ function love.mousepressed(x, y, button)
 end
 
 function love.keypressed(key, isrepeat)
-   if ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and states[10] == false and not is_paused) then
+   if ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and checkState() < 8 and not is_paused) then
       is_paused = true
       love.graphics.setColor(150, 150, 150)
 
-   elseif ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and states[10] == false and is_paused) then
+   elseif ((love.keyboard.isDown("escape") or love.keyboard.isDown("p")) and checkState() < 8 and is_paused) then
       is_paused = false
       love.graphics.setColor(255, 255, 255)
    end
 end
 
 function love.draw()
-  
+
    if (states[10] == false) then
       love.audio.stop(opening)
       love.audio.play(foule)
@@ -291,7 +291,6 @@ function love.draw()
       love.graphics.print("Sales tax :", 570, 110)
       love.graphics.print(round(item1.taxe * 100, 2), 670, 110)
       love.graphics.print("%", 700, 110)
-      love.graphics.print(gametime_elapsed, 300, 400)
       buySellSigns(item1)      
       axesGraph(item1)
       writeGraph(item1)
@@ -474,9 +473,27 @@ function love.draw()
       love.graphics.setFont(animeFont50)
       love.graphics.print("Good job !", 450, 130)
       love.graphics.setFont(animeFont30)
-      love.graphics.print("You earn enough money", 390, 230)
+      love.graphics.print("You earned enough money", 370, 230)
       love.graphics.print("to buy your own shop !", 390, 280)
+
       love.graphics.setFont(animeFont12)
+      love.graphics.print("Statistics :", 50, 300)
+      love.graphics.print("Real time elapsed :", 50, 400)
+      love.graphics.print(round(realtime_elapsed / 60 / 24, 0), 250, 400)
+      love.graphics.print("h", 265, 400)
+      love.graphics.print(round(realtime_elapsed / 60, 0), 280, 400)
+      love.graphics.print("m", 295, 400)
+      love.graphics.print(round(realtime_elapsed % 60, 0), 310, 400)
+      love.graphics.print("s", 325, 400)
+      love.graphics.print("Game time elapsed :", 50, 450)
+      love.graphics.print(round(gametime_elapsed / 24, 0), 250, 450)
+      love.graphics.print("h", 265, 450)
+      love.graphics.print(round(gametime_elapsed % 60, 0), 280, 450)
+      love.graphics.print("m", 295, 450)
+      love.graphics.print(round((gametime_elapsed / 60) % 60, 0), 310, 450)
+      love.graphics.print("s", 325, 450)
+      love.graphics.print("Money spent :", 50, 500)
+      love.graphics.print(item1.total + item2.total + item3.total + item4.total + item5.total, 300, 500)
       love.graphics.print("\"Time is money\" - Kraft Lawrence", 480, 330)
 
       love.graphics.setFont(animeFont30)
@@ -747,7 +764,7 @@ function checkLoseOrWin()
       love.audio.play(lose)
       setStatesFalse(8)
 
-   elseif (argent >= 4000) then
+   elseif (argent >= 2000) then
       love.audio.play(win)
       setStatesFalse(9)
    end
